@@ -1,0 +1,37 @@
+[
+  {
+    "id": "TC01",
+    "type": "direct_query",
+    "question": "Chào bạn, khi quên mật khẩu hệ thống nội bộ thì tôi phải làm thế nào?",
+    "expected_behavior": "Chatbot trả lời trực tiếp từ System Prompt, không cần gọi bất kỳ Tool nào.",
+    "complexity": "Low"
+  },
+  {
+    "id": "TC02",
+    "type": "single_tool_query",
+    "question": "Hãy kiểm tra giúp tôi tình trạng của ticket TK-101.",
+    "expected_behavior": "Agent nhận diện nhu cầu tra cứu, tự động phát sinh Tool Call 'lookup_ticket' với mã TK-101.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC03",
+    "type": "appointment_booking",
+    "question": "Mạng wifi tầng 3 bị chập chờn từ sáng nay, mã nhân viên của tôi là NV999, nhờ bạn tạo ticket hỗ trợ ưu tiên Cao nhé.",
+    "expected_behavior": "Agent tự động phát sinh Tool Call 'create_ticket' với thông tin nhân viên, mô tả sự cố và mức độ ưu tiên.",
+    "complexity": "Medium"
+  },
+  {
+    "id": "TC04",
+    "type": "multi_step_reasoning",
+    "question": "Ticket TK-102 của tôi xong chưa? Nếu chưa thì tạo thêm 1 ticket báo cáo mạng phòng họp 2 bị lỗi nhé, mã NV999.",
+    "expected_behavior": "Agent thực hiện chuỗi suy luận ReAct: Tra cứu ticket TK-102 trước, sau đó tiến hành tạo ticket báo lỗi mạng mới.",
+    "complexity": "High"
+  },
+  {
+    "id": "TC05",
+    "type": "edge_case_handling",
+    "question": "Kiểm tra giúp tôi ticket số hiệu TK-9999 xem tình trạng đến đâu rồi?",
+    "expected_behavior": "Agent nhận kết quả NOT_FOUND từ Tool và đưa ra phản hồi lịch sự, chính xác không bịa đặt dữ liệu.",
+    "complexity": "Medium"
+  }
+]

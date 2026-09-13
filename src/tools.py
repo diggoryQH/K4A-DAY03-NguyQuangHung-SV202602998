@@ -11,41 +11,40 @@ from typing import Dict, Any
 # ==============================================================================
 
 TOOLS_SCHEMA = [
-    # Tool 1: Đã được định nghĩa mẫu sẵn cho Học viên tham khảo
     {
-        "name": "academic_query",
-        "description": "Tra cứu hồ sơ và thông tin học vụ của sinh viên VinUni bằng mã sinh viên.",
+        "name": "lookup_ticket",
+        "description": "Tra cứu tình trạng và thông tin của ticket hỗ trợ kỹ thuật (IT Helpdesk).",
         "parameters": {
             "type": "object",
             "properties": {
-                "student_id": {
+                "ticket_id": {
                     "type": "string",
-                    "description": "Mã sinh viên cần tra cứu (ví dụ: 'SV2026001')"
+                    "description": "Mã ticket cần tra cứu (ví dụ: 'TK-101')"
                 }
             },
-            "required": ["student_id"]
+            "required": ["ticket_id"]
         }
     },
-    
-    # --------------------------------------------------------------------------
-    # TODO 1.2: HỌC VIÊN HOÀN THIỆN TOOL SCHEMA CHO 'schedule_appointment'
-    # 🎯 YÊU CẦU THIẾT KẾ SCHEMA (JSON SCHEMA STANDARD):
-    # 1. Tool dùng để đặt lịch hẹn tư vấn học vụ với Cố vấn học tập VinUni.
-    # 2. Thiết kế các tham số (properties) để LLM trích xuất:
-    #    - student_id (string): Mã sinh viên cần đặt lịch (ví dụ: 'SV2026001')
-    #    - datetime_str (string): Thời gian hẹn (ví dụ: '14:00 15/09/2026')
-    #    - advisor_name (string): Tên cố vấn học tập
-    # 3. Khai báo danh sách các trường bắt buộc (required).
-    # --------------------------------------------------------------------------
     {
-        "name": "schedule_appointment",
-        "description": "Đặt lịch hẹn tư vấn học vụ với Cố vấn học tập VinUni.",
+        "name": "create_ticket",
+        "description": "Tạo một yêu cầu hỗ trợ kỹ thuật (IT Helpdesk ticket) mới.",
         "parameters": {
             "type": "object",
             "properties": {
-                # TODO 1.2: Khai báo các thuộc tính tham số cho Tool tại đây...
+                "employee_id": {
+                    "type": "string",
+                    "description": "Mã nhân viên yêu cầu hỗ trợ (ví dụ: 'NV999')"
+                },
+                "issue_description": {
+                    "type": "string",
+                    "description": "Mô tả chi tiết về sự cố hoặc yêu cầu hỗ trợ"
+                },
+                "priority": {
+                    "type": "string",
+                    "description": "Mức độ ưu tiên của yêu cầu (ví dụ: 'Thấp', 'Trung bình', 'Cao')"
+                }
             },
-            "required": [] # TODO 1.2: Khai báo danh sách các trường bắt buộc tại đây...
+            "required": ["employee_id", "issue_description", "priority"]
         }
     }
 ]
@@ -55,57 +54,55 @@ TOOLS_SCHEMA = [
 # ==============================================================================
 
 MOCK_DATABASE = {
-    "SV2026001": {
-        "full_name": "Nguyễn Văn An",
-        "class": "AI-K4",
-        "gpa": 3.85,
-        "email": "an.nv@vinuni.edu.vn",
-        "status": "Đang học",
-        "advisor": "PGS.TS Nguyễn Văn A"
+    "TK-101": {
+        "status": "Đang xử lý",
+        "priority": "Cao",
+        "employee_id": "NV102",
+        "description": "Không kết nối được VPN từ xa."
     },
-    "SV2026002": {
-        "full_name": "Trần Thị Bình",
-        "class": "AI-K4",
-        "gpa": 3.60,
-        "email": "binh.tt@vinuni.edu.vn",
-        "status": "Đang học",
-        "advisor": "TS. Lê Thị B"
+    "TK-102": {
+        "status": "Hoàn thành",
+        "priority": "Trung bình",
+        "employee_id": "NV999",
+        "description": "Cần cài đặt phần mềm Adobe Illustrator."
     }
 }
 
 
-def execute_academic_query(student_id: str) -> str:
-    """Thực thi tra cứu học vụ theo mã sinh viên"""
-    student = MOCK_DATABASE.get(student_id.strip().upper())
-    if student:
+def execute_lookup_ticket(ticket_id: str) -> str:
+    """Thực thi tra cứu ticket theo mã"""
+    ticket = MOCK_DATABASE.get(ticket_id.strip().upper())
+    if ticket:
         return json.dumps({
             "status": "SUCCESS",
-            "student_id": student_id,
-            "data": student
+            "ticket_id": ticket_id,
+            "data": ticket
         }, ensure_ascii=False)
     else:
         return json.dumps({
             "status": "NOT_FOUND",
-            "message": f"Không tìm thấy dữ liệu sinh viên có mã '{student_id}'"
+            "message": f"Không tìm thấy dữ liệu ticket có mã '{ticket_id}'"
         }, ensure_ascii=False)
 
 
-def execute_schedule_appointment(student_id: str, datetime_str: str, advisor_name: str = "PGS.TS Nguyễn Văn A") -> str:
-    """Thực thi đặt lịch hẹn tư vấn học vụ"""
+def execute_create_ticket(employee_id: str, issue_description: str, priority: str = "Trung bình") -> str:
+    """Thực thi tạo ticket hỗ trợ kỹ thuật"""
+    import random
+    new_ticket_id = f"TK-{random.randint(1000, 9999)}"
     return json.dumps({
         "status": "SUCCESS",
-        "booking_id": f"BK-{student_id}-99",
-        "student_id": student_id,
-        "datetime": datetime_str,
-        "advisor": advisor_name,
-        "message": f"Đặt lịch thành công cho sinh viên {student_id} với {advisor_name} vào lúc {datetime_str}."
+        "ticket_id": new_ticket_id,
+        "employee_id": employee_id,
+        "priority": priority,
+        "description": issue_description,
+        "message": f"Tạo ticket thành công với mã {new_ticket_id} cho nhân viên {employee_id}, độ ưu tiên {priority}."
     }, ensure_ascii=False)
 
 
 # Router gọi tool thực tế
 TOOL_ROUTER = {
-    "academic_query": execute_academic_query,
-    "schedule_appointment": execute_schedule_appointment
+    "lookup_ticket": execute_lookup_ticket,
+    "create_ticket": execute_create_ticket
 }
 
 def dispatch_tool_call(tool_name: str, arguments: Dict[str, Any]) -> str:

@@ -1,29 +1,116 @@
 [
   {
     "step": 1,
-    "query": "Chào bạn, bạn có thể giới thiệu quy chế học vụ cơ bản của Đại học VinUni không?",
+    "query": "Chào bạn, khi quên mật khẩu hệ thống nội bộ thì tôi phải làm thế nào?",
     "action_type": "FINAL_ANSWER",
-    "thought": "Câu hỏi chung về quy chế học vụ, trả lời trực tiếp không cần gọi Tool.",
-    "output": "[Mock Agent Response]: Xin chào! Quy chế học vụ VinUni yêu cầu sinh viên tích lũy tối thiểu 120 tín chỉ và duy trì GPA trên 2.0 để tốt nghiệp.",
-    "latency_ms": 2845.93
+    "thought": "Câu hỏi chung về quy định IT, trả lời trực tiếp không cần gọi Tool.",
+    "output": "[Mock Agent Response]: Xin chào! Khi quên mật khẩu hệ thống nội bộ, bạn có thể tự thiết lập lại qua cổng MyAccount hoặc tạo ticket hỗ trợ.",
+    "latency_ms": 1122.0
   },
   {
     "step": 1,
-    "query": "Hãy tra cứu thông tin học vụ của sinh viên SV2026001.",
+    "query": "Hãy kiểm tra giúp tôi tình trạng của ticket TK-101.",
     "action_type": "TOOL_EXECUTION",
-    "tool_name": "academic_query",
+    "tool_name": "lookup_ticket",
     "arguments": {
-      "student_id": "SV2026001"
+      "ticket_id": "TK-101"
     },
-    "observation": {},
-    "latency_ms": 799.12
+    "observation": {
+      "status": "SUCCESS",
+      "ticket_id": "TK-101",
+      "data": {
+        "status": "Đang xử lý",
+        "priority": "Cao",
+        "employee_id": "NV102",
+        "description": "Không kết nối được VPN từ xa."
+      }
+    },
+    "latency_ms": 491.94
   },
   {
     "step": 2,
-    "query": "Hãy tra cứu thông tin học vụ của sinh viên SV2026001.",
+    "query": "Hãy kiểm tra giúp tôi tình trạng của ticket TK-101.",
     "action_type": "FINAL_ANSWER",
     "thought": "Tổng hợp kết quả từ MCP Server thành công.",
-    "output": "Chưa thể trả lời chi tiết do chưa nhận được dữ liệu từ MCP Server (hãy hoàn thành TODO 2.1).",
+    "output": "Thông tin Ticket TK-101: Trạng thái: Đang xử lý, Mức độ ưu tiên: Cao, Nhân viên yêu cầu: NV102, Sự cố: Không kết nối được VPN từ xa..",
+    "latency_ms": 10.0
+  },
+  {
+    "step": 1,
+    "query": "Mạng wifi tầng 3 bị chập chờn từ sáng nay, mã nhân viên của tôi là NV999, nhờ bạn tạo ticket hỗ trợ ưu tiên Cao nhé.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "create_ticket",
+    "arguments": {
+      "employee_id": "NV999",
+      "issue_description": "Mạng wifi tầng 3 bị chập chờn từ sáng nay, mã nhân viên của tôi là NV999, nhờ bạn tạo ticket hỗ trợ ưu tiên Cao nhé.",
+      "priority": "Cao"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "ticket_id": "TK-1060",
+      "employee_id": "NV999",
+      "priority": "Cao",
+      "description": "Mạng wifi tầng 3 bị chập chờn từ sáng nay, mã nhân viên của tôi là NV999, nhờ bạn tạo ticket hỗ trợ ưu tiên Cao nhé.",
+      "message": "Tạo ticket thành công với mã TK-1060 cho nhân viên NV999, độ ưu tiên Cao."
+    },
+    "latency_ms": 513.98
+  },
+  {
+    "step": 2,
+    "query": "Mạng wifi tầng 3 bị chập chờn từ sáng nay, mã nhân viên của tôi là NV999, nhờ bạn tạo ticket hỗ trợ ưu tiên Cao nhé.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Tổng hợp kết quả từ MCP Server thành công.",
+    "output": "Tạo ticket thành công với mã TK-1060 cho nhân viên NV999, độ ưu tiên Cao.",
+    "latency_ms": 10.0
+  },
+  {
+    "step": 1,
+    "query": "Ticket TK-102 của tôi xong chưa? Nếu chưa thì tạo thêm 1 ticket báo cáo mạng phòng họp 2 bị lỗi nhé, mã NV999.",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "create_ticket",
+    "arguments": {
+      "employee_id": "NV999",
+      "issue_description": "Ticket TK-102 của tôi xong chưa? Nếu chưa thì tạo thêm 1 ticket báo cáo mạng phòng họp 2 bị lỗi nhé, mã NV999.",
+      "priority": "Trung bình"
+    },
+    "observation": {
+      "status": "SUCCESS",
+      "ticket_id": "TK-8033",
+      "employee_id": "NV999",
+      "priority": "Trung bình",
+      "description": "Ticket TK-102 của tôi xong chưa? Nếu chưa thì tạo thêm 1 ticket báo cáo mạng phòng họp 2 bị lỗi nhé, mã NV999.",
+      "message": "Tạo ticket thành công với mã TK-8033 cho nhân viên NV999, độ ưu tiên Trung bình."
+    },
+    "latency_ms": 914.11
+  },
+  {
+    "step": 2,
+    "query": "Ticket TK-102 của tôi xong chưa? Nếu chưa thì tạo thêm 1 ticket báo cáo mạng phòng họp 2 bị lỗi nhé, mã NV999.",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Tổng hợp kết quả từ MCP Server thành công.",
+    "output": "Tạo ticket thành công với mã TK-8033 cho nhân viên NV999, độ ưu tiên Trung bình.",
+    "latency_ms": 10.0
+  },
+  {
+    "step": 1,
+    "query": "Kiểm tra giúp tôi ticket số hiệu TK-9999 xem tình trạng đến đâu rồi?",
+    "action_type": "TOOL_EXECUTION",
+    "tool_name": "lookup_ticket",
+    "arguments": {
+      "ticket_id": "TK-9999"
+    },
+    "observation": {
+      "status": "NOT_FOUND",
+      "message": "Không tìm thấy dữ liệu ticket có mã 'TK-9999'"
+    },
+    "latency_ms": 1212.7
+  },
+  {
+    "step": 2,
+    "query": "Kiểm tra giúp tôi ticket số hiệu TK-9999 xem tình trạng đến đâu rồi?",
+    "action_type": "FINAL_ANSWER",
+    "thought": "Tổng hợp kết quả từ MCP Server thành công.",
+    "output": "Không tìm thấy dữ liệu ticket có mã 'TK-9999'",
     "latency_ms": 10.0
   }
 ]

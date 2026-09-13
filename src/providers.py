@@ -38,25 +38,42 @@ class MockOfflineProvider(BaseLLMProvider):
         prompt_lower = prompt.lower()
         
         # Mô phỏng nhận diện intent gọi Tool
-        if "sv2026001" in prompt_lower and "đặt lịch" in prompt_lower:
+        import re
+        
+        # Ưu tiên 1: Nhận diện yêu cầu TẠO ticket (từ khóa: tạo, yêu cầu hỗ trợ, báo lỗi...)
+        if "tạo" in prompt_lower and ("ticket" in prompt_lower or "hỗ trợ" in prompt_lower or "mạng" in prompt_lower or "wifi" in prompt_lower or "mật khẩu" in prompt_lower or "sự cố" in prompt_lower):
+            # Trích xuất mã nhân viên nếu có
+            emp_match = re.search(r'nv\d+', prompt_lower)
+            employee_id = emp_match.group(0).upper() if emp_match else "NV999"
+            # Trích xuất mức ưu tiên nếu có
+            priority = "Trung bình"
+            if "cao" in prompt_lower:
+                priority = "Cao"
+            elif "thấp" in prompt_lower:
+                priority = "Thấp"
             return {
                 "type": "tool_call",
-                "tool_name": "schedule_appointment",
-                "arguments": {"student_id": "SV2026001", "datetime_str": "14:00 15/09/2026", "advisor_name": "PGS.TS Nguyễn Văn A"},
-                "thought": "Người dùng yêu cầu đặt lịch hẹn tư vấn cho sinh viên SV2026001. Tôi sẽ gọi tool schedule_appointment."
+                "tool_name": "create_ticket",
+                "arguments": {"employee_id": employee_id, "issue_description": prompt, "priority": priority},
+                "thought": f"Người dùng yêu cầu tạo ticket hỗ trợ mới cho nhân viên {employee_id}. Tôi sẽ gọi tool create_ticket."
             }
-        elif "sv2026001" in prompt_lower or "tra cứu" in prompt_lower:
+        # Ưu tiên 2: Nhận diện yêu cầu TRA CỨU ticket (từ khóa: tk-xxx, kiểm tra, tra cứu, tình trạng...)
+        elif "tk-" in prompt_lower or ("ticket" in prompt_lower and ("kiểm tra" in prompt_lower or "tra cứu" in prompt_lower or "tình trạng" in prompt_lower or "xong" in prompt_lower)):
+            ticket_id = "TK-101"
+            match = re.search(r'tk-\d+', prompt_lower)
+            if match:
+                ticket_id = match.group(0).upper()
             return {
                 "type": "tool_call",
-                "tool_name": "academic_query",
-                "arguments": {"student_id": "SV2026001"},
-                "thought": "Người dùng muốn tra cứu thông tin học vụ của sinh viên SV2026001. Tôi sẽ gọi tool academic_query."
+                "tool_name": "lookup_ticket",
+                "arguments": {"ticket_id": ticket_id},
+                "thought": f"Người dùng muốn tra cứu thông tin ticket {ticket_id}. Tôi sẽ gọi tool lookup_ticket."
             }
         else:
             return {
                 "type": "text",
-                "content": f"[Mock Agent Response]: Xin chào! Quy chế học vụ VinUni yêu cầu sinh viên tích lũy tối thiểu 120 tín chỉ và duy trì GPA trên 2.0 để tốt nghiệp.",
-                "thought": "Câu hỏi chung về quy chế học vụ, trả lời trực tiếp không cần gọi Tool."
+                "content": f"[Mock Agent Response]: Xin chào! Khi quên mật khẩu hệ thống nội bộ, bạn có thể tự thiết lập lại qua cổng MyAccount hoặc tạo ticket hỗ trợ.",
+                "thought": "Câu hỏi chung về quy định IT, trả lời trực tiếp không cần gọi Tool."
             }
 
 
